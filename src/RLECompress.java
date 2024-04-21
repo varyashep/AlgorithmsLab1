@@ -11,7 +11,7 @@ public class RLECompress {
     // Converting mono BW images to array of 0 and 1
     public static int[][] convertMono(BufferedImage image) throws IOException {
         int[][] data = convertToRGBBW(image);
-        FileWriter fw = new FileWriter("picture.txt");
+        FileWriter fw = new FileWriter("pictureCompressed.txt");
         BufferedWriter bw = new BufferedWriter(fw);
         for (int i = 0; i < image.getHeight(); i++) {
             for (int j = 0; j < image.getWidth(); j++) {
@@ -230,31 +230,120 @@ public class RLECompress {
         BufferedWriter bw = new BufferedWriter(fw);
         while (line != null) {
             //System.out.println(line);
-            int i = 0;
-            while (i < line.length()-1) {
-                if (line.charAt(i) == line.charAt(i+1)) {
-                    counter++;
-                    i++;
-                }
-                else {
-                    if (counter > 1) {
-                        bw.write((char) (counter + 'a'));
-                        bw.write(line.charAt(i));
-                        i++;
-                        counter = 1;
-                    }
-                    bw.write("|");
-                    while (i < line.length() - 1 && line.charAt(i) != line.charAt(i+1)) {
-                        bw.write(line.charAt(i));
-                        i++;
-                    }
+//            int length = line.length();
+//            int cur = 0;
+//            if (length > 150) {
+//                while (cur + 150 <= length) {
+//                    String subLine = line.substring(cur, cur + 150);
+//                    int i = 0;
+//                    while (i < subLine.length()-1) {
+//                        if (subLine.charAt(i) == subLine.charAt(i+1)) {
+//                            counter++;
+//                            i++;
+//                        }
+//                        else {
+//                            if (counter > 1) {
+//                                bw.write((char) (counter + (int)'a'));
+//                                bw.write(subLine.charAt(i));
+//                                i++;
+//                                counter = 1;
+//                            }
+//                            bw.write("|");
+//                            while (i < subLine.length() - 1 && subLine.charAt(i) != subLine.charAt(i+1)) {
+//                                bw.write(subLine.charAt(i));
+//                                i++;
+//                            }
+//
+//                            if (i == subLine.length() - 1) {
+//                                bw.write(subLine.charAt(i));
+//                            }
+//                            bw.write("|");
+//                        }
+//                    }
+//                    cur += 150;
+//                }
+//            }
+//            else {
+//                int i = 0;
+//                while (i < line.length()-1) {
+//                    if (line.charAt(i) == line.charAt(i+1)) {
+//                        counter++;
+//                        i++;
+//                    }
+//                    else {
+//                        if (counter > 1) {
+//                            bw.write((char) (counter + (int)'a'));
+//                            bw.write(line.charAt(i));
+//                            i++;
+//                            counter = 1;
+//                        }
+//                        bw.write("|");
+//                        while (i < line.length() - 1 && line.charAt(i) != line.charAt(i+1)) {
+//                            bw.write(line.charAt(i));
+//                            i++;
+//                        }
+//
+//                        if (i == line.length() - 1) {
+//                            bw.write(line.charAt(i));
+//                        }
+//                        bw.write("|");
+//                    }
+//                }
+//            }
+//            if (length - cur > 0) {
+//                String subLine = line.substring(cur, length);
+//                int i = 0;
+//                while (i < subLine.length()-1) {
+//                    if (subLine.charAt(i) == subLine.charAt(i+1)) {
+//                        counter++;
+//                        i++;
+//                    }
+//                    else {
+//                        if (counter > 1) {
+//                            bw.write((char) (counter + (int)'a'));
+//                            bw.write(subLine.charAt(i));
+//                            i++;
+//                            counter = 1;
+//                        }
+//                        bw.write("|");
+//                        while (i < subLine.length() - 1 && subLine.charAt(i) != subLine.charAt(i+1)) {
+//                            bw.write(subLine.charAt(i));
+//                            i++;
+//                        }
+//
+//                        if (i == subLine.length() - 1) {
+//                            bw.write(subLine.charAt(i));
+//                        }
+//                        bw.write("|");
+//                    }
+//                }
+//            }
 
-                    if (i == line.length() - 1) {
-                        bw.write(line.charAt(i));
+            int i = 0;
+                while (i < line.length()-1) {
+                    if (line.charAt(i) == line.charAt(i+1)) {
+                        counter++;
+                        i++;
                     }
-                    bw.write("|");
+                    else {
+                        if (counter > 1) {
+                            bw.write((char) (counter + (int)'a'));
+                            bw.write(line.charAt(i));
+                            i++;
+                            counter = 1;
+                        }
+                        bw.write("|");
+                        while (i < line.length() - 1 && line.charAt(i) != line.charAt(i+1)) {
+                            bw.write(line.charAt(i));
+                            i++;
+                        }
+
+                        if (i == line.length() - 1) {
+                            bw.write(line.charAt(i));
+                        }
+                        bw.write("|");
+                    }
                 }
-            }
             line = text.readLine();
         }
         bw.close();
@@ -282,7 +371,7 @@ public class RLECompress {
                     i++;
                 }
                 else if (!noRepeats) {
-                    int counter = (int) line.charAt(i) - (int) 'a';
+                    int counter = (int) line.charAt(i) - (int)'a';
                     while (counter > 0) {
                         bw.write(line.charAt(i+1));
                         counter--;
@@ -294,6 +383,7 @@ public class RLECompress {
         }
         bw.close();
     }
+
 
     // Converting BW picture with RGB
     public static int[][] convertToRGBBW(BufferedImage image) {
@@ -337,4 +427,92 @@ public class RLECompress {
         }
         bw.close();
     }
+
+
+    public static StringBuilder RLECoder(StringBuilder str) {
+        StringBuilder cur = new StringBuilder();
+        StringBuilder sng = new StringBuilder();
+        int count = 0;
+        int i = 0;
+        for (i = 0; i < str.length() - 1; i++) {
+            if (str.charAt(i) == str.charAt(i + 1)) {
+                if (!sng.isEmpty()) {
+                    if (sng.length() > 2) {
+                        cur.append((char) 0);
+                        cur.append(sng);
+                        cur.append((char) 0);
+                    } else {
+                        for (int j = 0; j < sng.length(); j++) {
+                            // out.append(1);
+                            cur.append((char)1);
+                            cur.append(sng.charAt(j));
+                        }
+                    }
+
+                    sng = new StringBuilder();
+                }
+                if (count == 0) {
+                    count++;
+                }
+                count++;
+            } else {
+                if (count > 0) {//запись сокращенного фрагмента
+                    //out.append(count);
+                    cur.append((char) count);
+                    count = 0;
+                    cur.append(str.charAt(i));
+                } else {//обработка одиночного символа
+                    sng.append(str.charAt(i));
+                }
+            }
+        }
+        if (count > 0) {//запись сокращенного фрагмента
+            //out.append(count);
+            cur.append((char) count);
+            count = 0;
+            cur.append(str.charAt(i));
+        } else {//обработка одиночного символа
+            sng.append(str.charAt(i));
+            if (sng.length() > 2) {
+                cur.append((char) 0);
+                cur.append(sng);
+                cur.append((char)0);
+                sng = new StringBuilder();
+            } else {
+                for (int j = 0; j < sng.length(); j++) {
+                    cur.append((char)1);
+                    //out.append(1);
+                    cur.append(sng.charAt(j));
+                }
+            }
+        }
+        return cur;
+    }
+
+    public static StringBuilder RLEDecoder(String encoded) {
+        StringBuilder decoded = new StringBuilder();
+        for (int i = 0; i < encoded.length(); i++) {
+            char currentChar = encoded.charAt(i);
+            if (currentChar == 0) {
+                // Если встретился символ со значением 0, пропускаем его и копируем следующие символы как есть
+                while (i < encoded.length() - 1 && encoded.charAt(i + 1) != 0) {
+                    i++;
+                    decoded.append(encoded.charAt(i));
+
+                }
+                i++;
+            } else {
+                // Если встретилась цифра, то следующий символ повторяется указанное количество раз
+                int repeatCount = (currentChar);
+                i++;
+                char repeatedChar = encoded.charAt(i);
+                for (int j = 0; j < repeatCount; j++) {
+                    decoded.append( repeatedChar);
+
+                }
+            }
+        }
+        return decoded;
+    }
+
 }

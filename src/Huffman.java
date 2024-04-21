@@ -175,7 +175,33 @@ public class Huffman {
         return bytes;
     }
 
-    private static String HuffmanDecoding(String resultHuffman, HashMap<Character, String> codes) {
+    public static HashMap<String, Character> createReverseCodes(HashMap<Character, String> codes) {
+        HashMap<String, Character> reverseCodes = new HashMap<>();
+        for (HashMap.Entry<Character, String> entry : codes.entrySet()) {
+            reverseCodes.put(entry.getValue(), entry.getKey());
+        }
+        return reverseCodes;
+    }
+
+    public static String decodeHuffmanString(byte[] encodedData, HashMap<String, Character> reverseCodes) {
+        StringBuilder binaryString = new StringBuilder();
+        for (byte b : encodedData) {
+            binaryString.append(String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0'));
+        }
+
+        StringBuilder result = new StringBuilder();
+        StringBuilder codeBuilder = new StringBuilder();
+        for (int i = 0; i < binaryString.length(); i++) {
+            codeBuilder.append(binaryString.charAt(i));
+            if (reverseCodes.containsKey(codeBuilder.toString())) {
+                result.append(reverseCodes.get(codeBuilder.toString()));
+                codeBuilder.setLength(0);
+            }
+        }
+        return result.toString();
+    }
+
+    public static String HuffmanDecoding(String resultHuffman, HashMap<Character, String> codes) {
         StringBuilder data = new StringBuilder();
         int i = 0;
         while(i < resultHuffman.length()) {
@@ -195,8 +221,5 @@ public class Huffman {
         return data.toString();
     }
 
-    public static void HuffmanDecoding() {
-        HuffmanDecoding(result, codes);
-    }
     
 }

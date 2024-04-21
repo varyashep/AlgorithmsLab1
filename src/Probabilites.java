@@ -1,6 +1,6 @@
 public class Probabilites {
 
-    public double getEntropy(double[] probabilites) {
+    public static double getEntropy(double[] probabilites) {
         double sum = 0;
         double base = 2.0;
         for (int i = 0; i < probabilites.length; i++) {

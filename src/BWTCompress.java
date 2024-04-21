@@ -4,6 +4,39 @@ import java.util.*;
 
 public class BWTCompress {
 
+    public static String InverseBWT(String resultString){
+        String originalString = resultString;
+        String creationLine = "";
+        String[] sbsCreationArray = new String[originalString.length()];
+        for (int i = 0; i < sbsCreationArray.length; i++) {
+            sbsCreationArray[i] = "";
+        }
+
+        char[] charArray = resultString.toCharArray();
+
+        int lengthOrigin = resultString.length();
+        while (lengthOrigin > 0) {
+            for (int i = 0; i < resultString.length(); i++) {
+                sbsCreationArray[i] = resultString.substring(i, i + 1) + sbsCreationArray[i];
+            }
+            Arrays.sort(sbsCreationArray);
+            lengthOrigin--;
+        }
+        //System.out.println("4) Восстановленный массив из преобразованной строки: \n" + Arrays.toString(sbsCreationArray));
+
+        for (int i = 0; i < sbsCreationArray.length; i++) {
+            String currentString =  sbsCreationArray[i];
+            String lastSymbol = currentString.substring(resultString.length() - 1);
+            if (lastSymbol.equals("$")){
+                creationLine = (sbsCreationArray[i]).substring(0,resultString.length()-1);
+                //System.out.println("5) Результат ОБРАТНОГО преобразования: \n" + creationLine);
+            }
+        }
+
+        return creationLine;
+    }
+
+
     public static String BWT(String input) {
         ArrayList<String> strings = new ArrayList<>();
         strings.add(input);
@@ -114,72 +147,6 @@ public class BWTCompress {
         return bwtResult;
     }
 
-    public static String efficientBWT(String s) {
-        if (s.length() >= 1) {
-            s+="$";
-            StringBuilder bwt = new StringBuilder();
-            int[] suffixArray = compress(s);
-            for (int i : suffixArray) {
-                int j = i - 1;
-                if (j < 0) {
-                    j += suffixArray.length;
-                }
-                bwt.append(s.charAt(j));
-            }
-            return bwt.toString();
-        }
-        return "";
-    }
 
-    public static int[] compress(String s){
-
-        int N = s.length();
-
-        int steps = Integer.bitCount(Integer.highestOneBit(N) - 1);
-
-        int rank[][] = new int[steps + 1][N];
-
-        for (int i = 0; i < N; i++) {
-            rank[0][i] = s.charAt(i) - 'a';
-        }
-
-        Tuple[] tuples = new Tuple[N];
-
-        for (int step = 1, cnt = 1; step <= steps; step++, cnt <<= 1) {
-            for (int i = 0; i < N; i++) {
-                Tuple tuple = new Tuple();
-                tuple.firstHalf = rank[step - 1][i];
-                tuple.secondHalf = i + cnt < N ? rank[step - 1][i + cnt] : -1;
-                tuple.originalIndex = i;
-
-                tuples[i] = tuple;
-            }
-
-            Arrays.sort(tuples);
-            if (tuples[0] != null) {
-                rank[step][tuples[0].originalIndex] = 0;
-            }
-
-            for (int i = 1, currRank = 0; i < N; i++) {
-                if(!tuples[i - 1].firstHalf.equals(tuples[i].firstHalf)
-                        || tuples[i - 1].secondHalf.equals(tuples[i].secondHalf)) {
-                    ++currRank;
-                }
-                if (tuples[i] != null) {
-                    rank[step][tuples[i].originalIndex] = currRank;
-                }
-            }
-
-
-        }
-
-        int[] suffixArray = new int[N];
-
-        for (int i = 0; i < N; i++) {
-            suffixArray[i] = tuples[i].originalIndex;
-        }
-
-        return suffixArray;
-    }
 
 }

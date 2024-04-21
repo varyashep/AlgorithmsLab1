@@ -1,9 +1,20 @@
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class ArithmeticCoding {
 
+    public static ArrayList<Character> getAlphabet(String data) {
+        ArrayList<Character> letters = new ArrayList<>();
+        for (int i = 0; i < data.length(); i++) {
+            if (!letters.contains(data.charAt(i))) {
+                letters.add(data.charAt(i));
+            }
+        }
+        return letters;
+    }
 
     public static double[] getProbabilities(String data) {
         ArrayList<Character> letters = new ArrayList<>();
@@ -54,11 +65,16 @@ public class ArithmeticCoding {
         return (R+L)/2;
     }
 
-    public static String arithmeticDecoding(double code, double[] probabilities, int dataSize) {
-        ArrayList<Character> letters = new ArrayList<>();
-        for (int i = 0; i < 26; i++) {
-            letters.add((char) (97 + i));
+    public static List<Double> convertByteArraysToDoubleList(List<byte[]> listOfDoubleBytes) {
+        List<Double> results = new ArrayList<>();
+        for (byte[] bytes : listOfDoubleBytes) {
+            ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+            results.add(byteBuffer.getDouble());
         }
+        return results;
+    }
+
+    public static String arithmeticDecoding(double code, double[] probabilities, int dataSize, ArrayList<Character> letters) {
         double[] intervals = new double[probabilities.length + 1];
         double sum = 0;
         for (int i = 0; i < intervals.length-1; i++) {

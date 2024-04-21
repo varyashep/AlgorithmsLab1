@@ -15,29 +15,51 @@ public class MTFCompress {
     }
 
 
-    public static String MTF(String input, LinkedList<Character> alphabet) {
+    public static StringBuilder MTF(String input, LinkedList<Character> alphabet) {
         // получаем алфавит по исходной строке
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int index;
         for (int i = 0; i < input.length(); i++) {
             index = alphabet.indexOf(input.charAt(i));
-            result += Integer.toString(index);
+            result.append(Integer.toString(index));
+            result.append(" ");
             alphabet.remove(index);
             alphabet.addFirst(input.charAt(i));
+        }
+        if (result.length() > 0 && result.charAt(result.length() - 1) == ' ') {
+            result.deleteCharAt(result.length() - 1);
         }
         return result;
     }
 
-    public static String rMTF(String input, LinkedList<Character> alphabet) {
-        String result = "";
-        Character character;
-        for (int i = 0; i < input.length(); i++) {
-            character = alphabet.get(Integer.parseInt(String.valueOf(input.charAt(i))));
-            result += String.valueOf(character);
-            alphabet.remove(Integer.parseInt(String.valueOf(input.charAt(i))));
+    public static String rMTF(String encoded, LinkedList<Character> alphabet) {
+        StringBuilder result = new StringBuilder();
+        StringBuilder indexBuilder = new StringBuilder();
+
+        for (int i = 0; i < encoded.length(); i++) {
+            char currentChar = encoded.charAt(i);
+            if (currentChar == ' ' && indexBuilder.length() > 0 && !indexBuilder.toString().contains(" ")) { // Предполагаем, что разделитель - пробел
+                int index;
+                    index = Integer.parseInt(indexBuilder.toString());
+                    char character = alphabet.get(index);
+                    result.append(character);
+                    alphabet.remove(index);
+                    alphabet.addFirst(character);
+                    indexBuilder.setLength(0); // Очищаем StringBuilder для следующего индекса
+            } else {
+                indexBuilder.append(currentChar);
+            }
+        }
+
+        // Обработка последнего индекса, если строка не заканчивается пробелом
+        if (indexBuilder.length() > 0 && !indexBuilder.toString().contains(" ")) {
+            int index = Integer.parseInt(indexBuilder.toString());
+            char character = alphabet.get(index);
+            result.append(character);
+            alphabet.remove(index);
             alphabet.addFirst(character);
         }
 
-        return result;
+        return result.toString();
     }
 }

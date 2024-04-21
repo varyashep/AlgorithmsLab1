@@ -5,7 +5,7 @@ public class LZ77 {
 
     public static List<Object> LZ77Compress(String data) {
         List<Object> result = new ArrayList<>();
-        int bufferSize = 1000;
+        int bufferSize = 500;
         int dataIndex = 0;
         while (dataIndex < data.length()) {
             int matchLength = 0;
